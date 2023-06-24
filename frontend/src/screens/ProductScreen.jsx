@@ -21,7 +21,7 @@ const ProductScreen = () => {
   const { id: productId } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [quantity, setQuantity] = useState(1);
+  const [qty, setqty] = useState(1);
 
   const {
     data: product,
@@ -30,7 +30,7 @@ const ProductScreen = () => {
   } = useGetProductDetailsQuery(productId);
 
   const addToCartHandler = () => {
-    dispatch(addToCart({ ...product, qty: quantity }));
+    dispatch(addToCart({ ...product, qty: qty }));
     navigate("/cart");
   };
 
@@ -92,12 +92,12 @@ const ProductScreen = () => {
                 {product.countInStock > 0 && (
                   <ListGroup.Item>
                     <Row>
-                      <Col>Quantity:</Col>
+                      <Col>qty:</Col>
                       <Col>
                         <Form.Control
                           as="select"
-                          value={quantity}
-                          onChange={(e) => setQuantity(Number(e.target.value))}
+                          value={qty}
+                          onChange={(e) => setqty(Number(e.target.value))}
                         >
                           {[...Array(product.countInStock).keys()].map((x) => (
                             <option key={x + 1} value={x + 1}>
