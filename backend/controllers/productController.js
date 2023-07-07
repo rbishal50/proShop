@@ -48,6 +48,7 @@ const updateProduct = asyncHandler(async function (req, res) {
   const { name, price, description, image, brand, category, countInStock } =
     req.body;
   const product = await Product.findById(req.params.id);
+
   if (!product) {
     res.status(404);
     throw new Error("Product not found!");
