@@ -1,6 +1,5 @@
 import asyncHandler from "../middlewares/asyncHandler.js";
 import User from "../models/userModel.js";
-import jwt from "jsonwebtoken";
 import generateToken from "../utils/generateToken.js";
 
 // @desc Auth user and get token
@@ -107,28 +106,62 @@ const updateUserProfile = asyncHandler(async function (req, res) {
 // @route GET /api/users
 // @access Private/Admin
 const getUsers = asyncHandler(async function (req, res) {
-  res.send("get users (admin)");
+  const users = await User.find({});
+  res.status(200).json(users);
 });
 
 // @desc Delete user
 // @route DELETE /api/users/:id
 // @access Private/Admin
 const deleteUser = asyncHandler(async function (req, res) {
-  res.send("delete user");
+  const user = await User.findById(req.params.id);
+  if (!user) {
+    res.status(404);
+    throw new error("User not found!");
+  }
+  if (user.isAdmin) {
+    res.status(400);
+    throw new error("Cannot delete admin user!");
+  }
+
+  await User.deleteOne({ _id: user._id });
+  res.status(200).json({ message: "User deleted successfully!" });
 });
 
 // @desc Get user by id
 // @route GET /api/users/:id
 // @access Private/Admin
 const getUserById = asyncHandler(async function (req, res) {
-  res.send("get user by id");
+  const user = await User.findById(req.params.id).select("-password");
+  if (!user) {
+    res.status(404);
+    throw new error("User not found!");
+  }
+
+  res.status(200).json(user);
 });
 
 // @desc Update user by id
 // @route PUT /api/users/:id
 // @access Private/Admin
 const updateUser = asyncHandler(async function (req, res) {
-  res.send("Update user");
+  const user = await User.findById(req.params.id);
+  if (!user) {
+    res.status(404);
+    throw new error("User not found!");
+  }
+
+  user.name = req.body.name || user.name;
+  user.email = req.body.email || user.email;
+  user.isAdmin = Boolean(req.body.isAdmin);
+
+  const updatedUser = await User.save();
+  res.status(200).json({
+    _id: updatedUser._id,
+    name: updatedUser.name,
+    email: updateUser.email,
+    isAdmin: updateUser.isAdmin,
+  });
 });
 
 export {
