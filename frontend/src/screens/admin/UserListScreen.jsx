@@ -31,11 +31,6 @@ const UserListScreen = () => {
         <Col>
           <h1>Users</h1>
         </Col>
-        <Col className="text-end">
-          <Button className="btn-sm m-3" onClick={() => {}}>
-            <FaEdit /> Create User
-          </Button>
-        </Col>
       </Row>
       {isLoadingDelete && <Loader />}
       {isLoading ? (
